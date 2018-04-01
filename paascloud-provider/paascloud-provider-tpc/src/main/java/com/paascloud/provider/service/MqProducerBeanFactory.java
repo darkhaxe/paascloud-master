@@ -17,60 +17,60 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class MqProducerBeanFactory {
 
-	private MqProducerBeanFactory() {
-	}
+    private static final ConcurrentHashMap<String, DefaultMQProducer> DEFAULT_MQ_PRODUCER_MAP = new ConcurrentHashMap<>();
+    private static final ConcurrentHashMap<String, String> CONSUMER_STATUS_MAP = new ConcurrentHashMap<>();
+    private static final ConcurrentHashMap<String, String> PRODUCER_STATUS_MAP = new ConcurrentHashMap<>();
 
-	private static final ConcurrentHashMap<String, DefaultMQProducer> DEFAULT_MQ_PRODUCER_MAP = new ConcurrentHashMap<>();
-	private static final ConcurrentHashMap<String, String> CONSUMER_STATUS_MAP = new ConcurrentHashMap<>();
-	private static final ConcurrentHashMap<String, String> PRODUCER_STATUS_MAP = new ConcurrentHashMap<>();
+    private MqProducerBeanFactory() {
+    }
 
-	/**
-	 * Gets bean.
-	 *
-	 * @param pid the pid
-	 *
-	 * @return the bean
-	 */
-	public static DefaultMQProducer getBean(String pid) {
-		Preconditions.checkArgument(StringUtils.isNotEmpty(pid), "getBean() pid is null");
-		return DEFAULT_MQ_PRODUCER_MAP.get(pid);
-	}
+    /**
+     * Gets bean.
+     *
+     * @param pid the pid
+     * @return the bean
+     */
+    public static DefaultMQProducer getBean(String pid) {
+        Preconditions.checkArgument(StringUtils.isNotEmpty(pid), "getBean() pid is null");
+        return DEFAULT_MQ_PRODUCER_MAP.get(pid);
+    }
 
-	/**
-	 * Build producer bean.
-	 *
-	 * @param producerDto the producer dto
-	 */
-	public static void buildProducerBean(ReliableMessageRegisterDto producerDto) {
+    /**
+     * Build producer bean.
+     * 将zk取出的节点信息加入到mq生产者节点全局缓存
+     *
+     * @param producerDto the producer dto
+     */
+    public static void buildProducerBean(ReliableMessageRegisterDto producerDto) {
 
-		String pid = producerDto.getProducerGroup();
-		DefaultMQProducer mQProducer = DEFAULT_MQ_PRODUCER_MAP.get(pid);
-		if (mQProducer == null) {
-			String simpleName = producerDto.getProducerGroup();
-			BeanDefinitionBuilder beanDefinitionBuilder = BeanDefinitionBuilder.rootBeanDefinition(DefaultMQProducer.class);
-			beanDefinitionBuilder.setScope(BeanDefinition.SCOPE_SINGLETON);
-			beanDefinitionBuilder.addPropertyValue("producerGroup", producerDto.getProducerGroup());
-			beanDefinitionBuilder.addPropertyValue("namesrvAddr", producerDto.getNamesrvAddr());
-			beanDefinitionBuilder.setInitMethodName("start");
-			beanDefinitionBuilder.setDestroyMethodName("shutdown");
-			SpringContextHolder.getDefaultListableBeanFactory().registerBeanDefinition(simpleName, beanDefinitionBuilder.getBeanDefinition());
-			DEFAULT_MQ_PRODUCER_MAP.put(simpleName, SpringContextHolder.getBean(simpleName));
-		}
-	}
+        String pid = producerDto.getProducerGroup();
+        DefaultMQProducer mQProducer = DEFAULT_MQ_PRODUCER_MAP.get(pid);
+        if (mQProducer == null) {
+            String simpleName = producerDto.getProducerGroup();
+            BeanDefinitionBuilder beanDefinitionBuilder = BeanDefinitionBuilder.rootBeanDefinition(DefaultMQProducer.class);
+            beanDefinitionBuilder.setScope(BeanDefinition.SCOPE_SINGLETON);
+            beanDefinitionBuilder.addPropertyValue("producerGroup", producerDto.getProducerGroup());
+            beanDefinitionBuilder.addPropertyValue("namesrvAddr", producerDto.getNamesrvAddr());
+            beanDefinitionBuilder.setInitMethodName("start");
+            beanDefinitionBuilder.setDestroyMethodName("shutdown");
+            SpringContextHolder.getDefaultListableBeanFactory().registerBeanDefinition(simpleName, beanDefinitionBuilder.getBeanDefinition());
+            DEFAULT_MQ_PRODUCER_MAP.put(simpleName, SpringContextHolder.getBean(simpleName));
+        }
+    }
 
-	public static void putCid(String cid) {
-		CONSUMER_STATUS_MAP.put(cid, cid);
-	}
+    public static void putCid(String cid) {
+        CONSUMER_STATUS_MAP.put(cid, cid);
+    }
 
-	public static void rmCid(String cid) {
-		CONSUMER_STATUS_MAP.remove(cid);
-	}
+    public static void rmCid(String cid) {
+        CONSUMER_STATUS_MAP.remove(cid);
+    }
 
-	public static void putPid(final String pid) {
-		PRODUCER_STATUS_MAP.put(pid, pid);
-	}
+    public static void putPid(final String pid) {
+        PRODUCER_STATUS_MAP.put(pid, pid);
+    }
 
-	public static void rmPid(String pid) {
-		PRODUCER_STATUS_MAP.remove(pid);
-	}
+    public static void rmPid(String pid) {
+        PRODUCER_STATUS_MAP.remove(pid);
+    }
 }

@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
 
-/**
+/**任务服务中心
  * The interface Tpc mq message feign api.
  *
  * @author paascloud.net @gmail.com
@@ -49,8 +49,8 @@ public interface TpcMqMessageFeignApi {
 	Wrapper saveAndSendMessage(@RequestBody TpcMqMessageDto mqMessageDto);
 
 	/**
-	 * 直接发送消息.
-	 *
+     * 直接发送消息.不入库
+     *
 	 * @param mqMessageDto the mq message dto
 	 *
 	 * @return the wrapper

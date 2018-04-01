@@ -23,17 +23,26 @@ public class RocketMqProducer {
 
 	private static final int PRODUCER_RETRY_TIMES = 3;
 
-	public static SendResult sendSimpleMessage(String body, String topic, String tag, String key, String pid, Integer delayLevel) {
-		if (delayLevel == null) {
-			delayLevel = 0;
-		}
-		Message message = MqMessage.checkMessage(body, topic, tag, key);
-		if (delayLevel < 0 || delayLevel > GlobalConstant.Number.EIGHTEEN_INT) {
-			throw new TpcBizException(ErrorCodeEnum.TPC100500013, topic, key);
-		}
-		message.setDelayTimeLevel(delayLevel);
-		return retrySendMessage(pid, message);
-	}
+    /**
+     * @param body
+     * @param topic
+     * @param tag
+     * @param key
+     * @param pid        ProducerGroup
+     * @param delayLevel
+     * @return
+     */
+    public static SendResult sendSimpleMessage(String body, String topic, String tag, String key, String pid, Integer delayLevel) {
+        if (delayLevel == null) {
+            delayLevel = 0;
+        }
+        if (delayLevel < 0 || delayLevel > GlobalConstant.Number.EIGHTEEN_INT) {
+            throw new TpcBizException(ErrorCodeEnum.TPC100500013, topic, key);
+        }
+        Message message = MqMessage.checkMessage(body, topic, tag, key);
+        message.setDelayTimeLevel(delayLevel);
+        return retrySendMessage(pid, message);
+    }
 
 	private static SendResult retrySendMessage(String pid, Message msg) {
 		int iniCount = 1;

@@ -35,8 +35,11 @@ public class EmailProducer {
 	 * @param emailTemplateEnum the email template enum
 	 * @param param             the param
 	 */
-	public MqMessageData sendEmailMq(Set<String> emailSet, UacEmailTemplateEnum emailTemplateEnum, AliyunMqTopicConstants.MqTagEnum tagEnum, Map<String, Object> param) {
-		log.info("pcSendEmailRequest - 发送邮件MQ. emailSet={}, param={}", emailSet, param);
+    public MqMessageData createEmailMq(Set<String> emailSet,
+                                       UacEmailTemplateEnum emailTemplateEnum,
+                                       AliyunMqTopicConstants.MqTagEnum tagEnum,
+                                       Map<String, Object> param) {
+        log.info("pcSendEmailRequest - 发送邮件MQ. emailSet={}, param={}", emailSet, param);
 		String msgBody;
 		try {
 
