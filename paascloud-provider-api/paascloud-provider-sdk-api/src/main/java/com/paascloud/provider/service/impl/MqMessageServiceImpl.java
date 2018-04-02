@@ -3,8 +3,6 @@ package com.paascloud.provider.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.google.common.collect.Lists;
-import com.paascloud.PublicUtil;
 import com.paascloud.base.constant.AliyunMqTopicConstants;
 import com.paascloud.base.dto.MessageQueryDto;
 import com.paascloud.base.dto.MqMessageVo;
@@ -115,6 +113,11 @@ public class MqMessageServiceImpl implements MqMessageService {
         }
     }
 
+    /**
+     * 消费者收到mq消息
+     *
+     * @param cid 消费者分组id
+     */
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void confirmReceiveMessage(String cid, MqMessageData messageData) {
@@ -135,6 +138,10 @@ public class MqMessageServiceImpl implements MqMessageService {
         }
     }
 
+    /**
+     * 消费者消费成功
+     * @param cid 消费者分组id
+     */
     @Override
     public void saveAndConfirmFinishMessage(String cid, String messageKey) {
         Wrapper wrapper = tpcMqMessageFeignApi.confirmConsumedMessage(cid, messageKey);

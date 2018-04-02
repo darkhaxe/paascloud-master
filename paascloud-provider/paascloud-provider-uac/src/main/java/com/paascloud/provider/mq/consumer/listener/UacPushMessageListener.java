@@ -41,8 +41,9 @@ public class UacPushMessageListener implements MessageListenerConcurrently {
 	 */
 	@Override
 	@MqConsumerStore
-	public ConsumeConcurrentlyStatus consumeMessage(List<MessageExt> messageExtList, ConsumeConcurrentlyContext consumeConcurrentlyContext) {
-		MessageExt msg = messageExtList.get(0);
+    public ConsumeConcurrentlyStatus consumeMessage(List<MessageExt> messageExtList,
+                                                    ConsumeConcurrentlyContext consumeConcurrentlyContext) {
+        MessageExt msg = messageExtList.get(0);
 		String body = new String(msg.getBody());
 		String topicName = msg.getTopic();
 		String tags = msg.getTags();

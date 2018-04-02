@@ -84,6 +84,7 @@ public class MqConsumerStoreAspect {
         //2.
         if (isStorePreStatus) {
             //实际调用任务服务(tpc)的接口入库 todo 写入内容:
+            //确认收到mq消息
             mqMessageService.confirmReceiveMessage(consumerGroup, dto);
         }
         String methodName = joinPoint.getSignature().getName();
@@ -92,6 +93,7 @@ public class MqConsumerStoreAspect {
             log.info("result={}", result);
             //调用方成功,在写入完成的记录;
             // 不成功,则不会有写入的记录; todo 写入内容:
+            //mq消费成功
             if (CONSUME_SUCCESS.equals(result.toString())) {
                 mqMessageService.saveAndConfirmFinishMessage(consumerGroup, messageKey);
             }

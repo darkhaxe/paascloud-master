@@ -85,7 +85,6 @@ public class MqProducerStoreAspect {
         //------------------方法执行后的操作------------------
         if (type == MqSendTypeEnum.SAVE_AND_SEND) {
             // 入库一条记录,状态为等待确认
-
             mqMessageService.saveAndSendMessage(domain);//调用本地的mapper保存消息并发送
         } else if (type == MqSendTypeEnum.DIRECT_SEND) {
             mqMessageService.directSendMessage(domain);

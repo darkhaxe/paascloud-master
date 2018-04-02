@@ -10,7 +10,7 @@ import java.util.List;
 
 /**
  * The class Tpc mq message.
- *
+ * 可靠消息表
  * @author paascloud.net @gmail.com
  */
 @Data
